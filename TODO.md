@@ -1,8 +1,9 @@
 # TODO
 
-* [ ] LaTeX math support
+* [X] LaTeX math support
   * See https://github.com/remarkjs/react-markdown/issues/785 for workarounds to implement `\[ \]`
   * https://sebdoe.com/article/math-formatting-with-katex-in-react-markdown-using-rehype-katex talks about how to use this in react-markdown
+* [ ] Allow editing previous messages
 * [ ] Support more models???
 * [ ] Class selection UI
 * [ ] Question selection UI

@@ -2,6 +2,10 @@ import Link from 'next/link';
 import React, { memo } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
+import { preprocessLaTeX } from './latex';
 
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components: Partial<Components> = {
@@ -110,9 +114,13 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
   };
 
+  // This only works well on GPT output.
+  // let processedChildren = preprocessLaTeX(children);
+  let processedChildren = children;
+
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-      {children}
+    <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={components}>
+      {processedChildren}
     </ReactMarkdown>
   );
 };
