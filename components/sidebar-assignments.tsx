@@ -34,32 +34,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import type { Chat } from '@/lib/db/schema';
+import type { Assignment } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
 
-type GroupedChats = {
-  today: Chat[];
-  yesterday: Chat[];
-  lastWeek: Chat[];
-  lastMonth: Chat[];
-  older: Chat[];
+type GroupedAssignments = {
+  today: Assignment[];
+  yesterday: Assignment[];
+  lastWeek: Assignment[];
+  lastMonth: Assignment[];
+  older: Assignment[];
 };
 
-const ChatItem = ({
-  chat,
+const AssignmentItem = ({
+  assignment,
   isActive,
   onDelete,
   setOpenMobile,
 }: {
-  chat: Chat;
+  assignment: Assignment;
   isActive: boolean;
-  onDelete: (chatId: string) => void;
+  onDelete: (assignmentId: string) => void;
   setOpenMobile: (open: boolean) => void;
 }) => (
   <SidebarMenuItem>
     <SidebarMenuButton asChild isActive={isActive}>
-      <Link href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)}>
-        <span>{chat.title}</span>
+      <Link href={`/assignment/${assignment.id}`} onClick={() => setOpenMobile(false)}>
+        <span>{assignment.title}</span>
       </Link>
     </SidebarMenuButton>
     <DropdownMenu modal={true}>
@@ -75,7 +75,7 @@ const ChatItem = ({
       <DropdownMenuContent side="bottom" align="end">
         <DropdownMenuItem
           className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500"
-          onSelect={() => onDelete(chat.id)}
+          onSelect={() => onDelete(assignment.id)}
         >
           <TrashIcon />
           <span>Delete</span>
@@ -85,15 +85,15 @@ const ChatItem = ({
   </SidebarMenuItem>
 );
 
-export function SidebarHistory({ user }: { user: User | undefined }) {
+export function SidebarAssignments({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
   const { id } = useParams();
   const pathname = usePathname();
   const {
-    data: history,
+    data: assignments,
     isLoading,
     mutate,
-  } = useSWR<Array<Chat>>(user ? '/api/history' : null, fetcher, {
+  } = useSWR<Array<Assignment>>(user ? '/api/assignments' : null, fetcher, {
     fallbackData: [],
   });
 
@@ -105,21 +105,21 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useRouter();
   const handleDelete = async () => {
-    const deletePromise = fetch(`/api/chat?id=${deleteId}`, {
+    const deletePromise = fetch(`/api/assignment?id=${deleteId}`, {
       method: 'DELETE',
     });
 
     toast.promise(deletePromise, {
-      loading: 'Deleting chat...',
+      loading: 'Deleting assignment...',
       success: () => {
-        mutate((history) => {
-          if (history) {
-            return history.filter((h) => h.id !== id);
+        mutate((assignments) => {
+          if (assignments) {
+            return assignments.filter((h) => h.id !== id);
           }
         });
-        return 'Chat deleted successfully';
+        return 'Assignment deleted successfully';
       },
-      error: 'Failed to delete chat',
+      error: 'Failed to delete assignment',
     });
 
     setShowDeleteDialog(false);
@@ -134,7 +134,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
       <SidebarGroup>
         <SidebarGroupContent>
           <div className="text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
-            <div>Login to save and revisit previous chats!</div>
+            <div>Login to save and revisit previous assignments!</div>
           </div>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -170,13 +170,23 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     );
   }
 
-  if (history?.length === 0) {
+  if (assignments?.length === 0) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
+          <SidebarMenuButton
+            onClick={() => {
+              setOpenMobile(false);
+              router.push('/assignment');
+              router.refresh();
+            }}
+          >
+            <PlusIcon />
+            <span>New Assignment</span>
+          </SidebarMenuButton>
           <div className="text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
             <div>
-              Your conversations will appear here once you start chatting!
+              Your conversations will appear here once you start assignmentting!
             </div>
           </div>
         </SidebarGroupContent>
@@ -184,25 +194,25 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     );
   }
 
-  const groupChatsByDate = (chats: Chat[]): GroupedChats => {
+  const groupAssignmentsByDate = (assignments: Assignment[]): GroupedAssignments => {
     const now = new Date();
     const oneWeekAgo = subWeeks(now, 1);
     const oneMonthAgo = subMonths(now, 1);
 
-    return chats.reduce(
-      (groups, chat) => {
-        const chatDate = new Date(chat.createdAt);
+    return assignments.reduce(
+      (groups, assignment) => {
+        const assignmentDate = new Date(assignment.createdAt);
 
-        if (isToday(chatDate)) {
-          groups.today.push(chat);
-        } else if (isYesterday(chatDate)) {
-          groups.yesterday.push(chat);
-        } else if (chatDate > oneWeekAgo) {
-          groups.lastWeek.push(chat);
-        } else if (chatDate > oneMonthAgo) {
-          groups.lastMonth.push(chat);
+        if (isToday(assignmentDate)) {
+          groups.today.push(assignment);
+        } else if (isYesterday(assignmentDate)) {
+          groups.yesterday.push(assignment);
+        } else if (assignmentDate > oneWeekAgo) {
+          groups.lastWeek.push(assignment);
+        } else if (assignmentDate > oneMonthAgo) {
+          groups.lastMonth.push(assignment);
         } else {
-          groups.older.push(chat);
+          groups.older.push(assignment);
         }
 
         return groups;
@@ -213,7 +223,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
         lastWeek: [],
         lastMonth: [],
         older: [],
-      } as GroupedChats,
+      } as GroupedAssignments,
     );
   };
 
@@ -222,36 +232,34 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-          <SidebarMenuItem>
             <SidebarMenuButton
-                onClick={() => {
-                  setOpenMobile(false);
-                  router.push('/');
-                  router.refresh();
-                }}
-              >
-                <PlusIcon />
-                <span>New Chat</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            {history &&
+              onClick={() => {
+                setOpenMobile(false);
+                router.push('/assignment');
+                router.refresh();
+              }}
+            >
+              <PlusIcon />
+              <span>New Assignment</span>
+            </SidebarMenuButton>
+            {assignments &&
               (() => {
-                const groupedChats = groupChatsByDate(history);
+                const groupedAssignments = groupAssignmentsByDate(assignments);
 
                 return (
                   <>
-                    {groupedChats.today.length > 0 && (
+                    {groupedAssignments.today.length > 0 && (
                       <>
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
                           Today
                         </div>
-                        {groupedChats.today.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            isActive={chat.id === id}
-                            onDelete={(chatId) => {
-                              setDeleteId(chatId);
+                        {groupedAssignments.today.map((assignment) => (
+                          <AssignmentItem
+                            key={assignment.id}
+                            assignment={assignment}
+                            isActive={assignment.id === id}
+                            onDelete={(assignmentId) => {
+                              setDeleteId(assignmentId);
                               setShowDeleteDialog(true);
                             }}
                             setOpenMobile={setOpenMobile}
@@ -260,18 +268,18 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                       </>
                     )}
 
-                    {groupedChats.yesterday.length > 0 && (
+                    {groupedAssignments.yesterday.length > 0 && (
                       <>
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50 mt-6">
                           Yesterday
                         </div>
-                        {groupedChats.yesterday.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            isActive={chat.id === id}
-                            onDelete={(chatId) => {
-                              setDeleteId(chatId);
+                        {groupedAssignments.yesterday.map((assignment) => (
+                          <AssignmentItem
+                            key={assignment.id}
+                            assignment={assignment}
+                            isActive={assignment.id === id}
+                            onDelete={(assignmentId) => {
+                              setDeleteId(assignmentId);
                               setShowDeleteDialog(true);
                             }}
                             setOpenMobile={setOpenMobile}
@@ -280,18 +288,18 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                       </>
                     )}
 
-                    {groupedChats.lastWeek.length > 0 && (
+                    {groupedAssignments.lastWeek.length > 0 && (
                       <>
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50 mt-6">
                           Last 7 days
                         </div>
-                        {groupedChats.lastWeek.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            isActive={chat.id === id}
-                            onDelete={(chatId) => {
-                              setDeleteId(chatId);
+                        {groupedAssignments.lastWeek.map((assignment) => (
+                          <AssignmentItem
+                            key={assignment.id}
+                            assignment={assignment}
+                            isActive={assignment.id === id}
+                            onDelete={(assignmentId) => {
+                              setDeleteId(assignmentId);
                               setShowDeleteDialog(true);
                             }}
                             setOpenMobile={setOpenMobile}
@@ -300,18 +308,18 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                       </>
                     )}
 
-                    {groupedChats.lastMonth.length > 0 && (
+                    {groupedAssignments.lastMonth.length > 0 && (
                       <>
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50 mt-6">
                           Last 30 days
                         </div>
-                        {groupedChats.lastMonth.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            isActive={chat.id === id}
-                            onDelete={(chatId) => {
-                              setDeleteId(chatId);
+                        {groupedAssignments.lastMonth.map((assignment) => (
+                          <AssignmentItem
+                            key={assignment.id}
+                            assignment={assignment}
+                            isActive={assignment.id === id}
+                            onDelete={(assignmentId) => {
+                              setDeleteId(assignmentId);
                               setShowDeleteDialog(true);
                             }}
                             setOpenMobile={setOpenMobile}
@@ -320,18 +328,18 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                       </>
                     )}
 
-                    {groupedChats.older.length > 0 && (
+                    {groupedAssignments.older.length > 0 && (
                       <>
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50 mt-6">
                           Older
                         </div>
-                        {groupedChats.older.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            isActive={chat.id === id}
-                            onDelete={(chatId) => {
-                              setDeleteId(chatId);
+                        {groupedAssignments.older.map((assignment) => (
+                          <AssignmentItem
+                            key={assignment.id}
+                            assignment={assignment}
+                            isActive={assignment.id === id}
+                            onDelete={(assignmentId) => {
+                              setDeleteId(assignmentId);
                               setShowDeleteDialog(true);
                             }}
                             setOpenMobile={setOpenMobile}
@@ -351,7 +359,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              chat and remove it from our servers.
+              assignment and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

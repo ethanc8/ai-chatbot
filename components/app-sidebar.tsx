@@ -16,12 +16,15 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
 import { BetterTooltip } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { ChevronDown } from 'lucide-react';
+import { SidebarAssignments } from './sidebar-assignments';
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -65,11 +68,24 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           <SidebarGroup className="-mx-2">
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger>
-                My Chats
+                My Assignments
                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
             <CollapsibleContent>
+              <SidebarAssignments user={user} />
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        <Collapsible defaultOpen className="group/collapsible">
+          <SidebarGroup className="-mx-2">
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger>
+                My Chats
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>              
               <SidebarHistory user={user} />
             </CollapsibleContent>
           </SidebarGroup>

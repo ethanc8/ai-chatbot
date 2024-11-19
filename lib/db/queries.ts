@@ -15,6 +15,9 @@ import {
   type Message,
   message,
   vote,
+  assignment,
+  problem,
+  type Problem
 } from './schema';
 
 // Optionally, if not using email/pass login, you can
@@ -276,6 +279,116 @@ export async function getSuggestionsByDocumentId({
     console.error(
       'Failed to get suggestions by document version from database',
     );
+    throw error;
+  }
+}
+
+export async function saveAssignment({
+  id,
+  userId,
+  title,
+}: {
+  id: string;
+  userId: string;
+  title: string;
+}) {
+  try {
+    return await db.insert(assignment).values({
+      id,
+      createdAt: new Date(),
+      userId,
+      title,
+    });
+  } catch (error) {
+    console.error('Failed to save assignment in database');
+    throw error;
+  }
+}
+
+export async function deleteAssignmentById({ id }: { id: string }) {
+  try {
+    await db.delete(problem).where(eq(problem.assignmentId, id));
+
+    return await db.delete(assignment).where(eq(assignment.id, id));
+  } catch (error) {
+    console.error('Failed to delete assignment by id from database');
+    throw error;
+  }
+}
+
+export async function getAssignmentsByUserId({ id }: { id: string }) {
+  try {
+    return await db
+      .select()
+      .from(assignment)
+      .where(eq(assignment.userId, id))
+      .orderBy(desc(assignment.createdAt));
+  } catch (error) {
+    console.error('Failed to get assignments by user from database');
+    throw error;
+  }
+}
+
+export async function getAssignmentById({ id }: { id: string }) {
+  try {
+    const [selectedAssignment] = await db.select().from(assignment).where(eq(assignment.id, id));
+    return selectedAssignment;
+  } catch (error) {
+    console.error('Failed to get assignment by id from database');
+    throw error;
+  }
+}
+
+export async function saveProblems({ problems }: { problems: Array<Problem> }) {
+  try {
+    return await db.insert(problem).values(problems);
+  } catch (error) {
+    console.error('Failed to save problems in database', error);
+    throw error;
+  }
+}
+
+export async function saveProblem({
+  id,
+  assignmentId,
+  content,
+}: {
+  id: string;
+  assignmentId: string;
+  content: object;
+}) {
+  try {
+    return await db.insert(problem).values({
+      id,
+      createdAt: new Date(),
+      assignmentId,
+      content,
+    });
+  } catch (error) {
+    console.error('Failed to save problem in database');
+    throw error;
+  }
+}
+
+export async function getProblemsByAssignmentId({ id }: { id: string }) {
+  try {
+    return await db
+      .select()
+      .from(problem)
+      .where(eq(problem.assignmentId, id))
+      .orderBy(asc(problem.createdAt));
+  } catch (error) {
+    console.error('Failed to get problems by assignment id from database', error);
+    throw error;
+  }
+}
+
+export async function getProblemById({ id }: { id: string }) {
+  try {
+    const [selectedProblem] = await db.select().from(problem).where(eq(problem.id, id));
+    return selectedProblem;
+  } catch (error) {
+    console.error('Failed to get problem by id from database');
     throw error;
   }
 }

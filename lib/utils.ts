@@ -8,7 +8,20 @@ import type {
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import type { Message as DBMessage, Document } from '@/lib/db/schema';
+import type { Message as DBMessage, Problem as DBProblem, Document } from '@/lib/db/schema';
+
+export type Problem = {
+  id: string;
+  problemDescription: string;
+  answer: string;
+  solutionWriteup: string;
+};
+
+type ProblemContent = {
+  problemDescription: string;
+  answer: string;
+  solutionWriteup: string;
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -123,6 +136,21 @@ export function convertToUIMessages(
     });
 
     return chatMessages;
+  }, []);
+}
+
+export function convertToUIProblems(
+  problems: Array<DBProblem>,
+): Array<Problem> {
+  return problems.reduce((chatProblems: Array<Problem>, problem) => {
+    chatProblems.push({
+      id: problem.id,
+      problemDescription: (problem.content as ProblemContent).problemDescription,
+      answer: (problem.content as ProblemContent).answer,
+      solutionWriteup: (problem.content as ProblemContent).solutionWriteup,
+    });
+
+    return chatProblems;
   }, []);
 }
 

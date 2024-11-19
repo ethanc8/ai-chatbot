@@ -107,3 +107,25 @@ export const suggestion = pgTable(
 );
 
 export type Suggestion = InferSelectModel<typeof suggestion>;
+
+export const assignment = pgTable('Assignment', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  createdAt: timestamp('createdAt').notNull(),
+  title: text('title').notNull(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
+});
+
+export type Assignment = InferSelectModel<typeof assignment>;
+
+export const problem = pgTable('Problem', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  assignmentId: uuid('assignmentId')
+    .notNull()
+    .references(() => assignment.id),
+  content: json('content').notNull(),
+  createdAt: timestamp('createdAt').notNull(),
+});
+
+export type Problem = InferSelectModel<typeof problem>;
