@@ -300,11 +300,12 @@ export async function saveAssignment({
       }).where(eq(assignment.id, id));
     } else {
       return await db.insert(assignment).values({
-      id,
-      createdAt: new Date(),
-      userId,
-      title,
-    });
+        id,
+        createdAt: new Date(),
+        userId,
+        title,
+      });
+    }
   } catch (error) {
     console.error('Failed to save assignment in database');
     throw error;
