@@ -293,7 +293,13 @@ export async function saveAssignment({
   title: string;
 }) {
   try {
-    return await db.insert(assignment).values({
+    const existingAssignment = await db.select().from(assignment).where(eq(assignment.id, id));
+    if (existingAssignment.length > 0) {
+      return await db.update(assignment).set({
+        title,
+      }).where(eq(assignment.id, id));
+    } else {
+      return await db.insert(assignment).values({
       id,
       createdAt: new Date(),
       userId,
