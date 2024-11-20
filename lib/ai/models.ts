@@ -15,6 +15,12 @@ export const models: Array<Model> = [
     description: 'Google experimental model',
   },
   {
+    id: 'learnlm-1.5-pro-experimental',
+    label: 'LearnLM 1.5 Pro',
+    apiIdentifier: 'learnlm-1.5-pro-experimental',
+    description: 'Google experimental tutoring model',
+  },
+  {
     id: 'gemini-1.5-pro-002',
     label: 'Gemini 1.5 Pro 002',
     apiIdentifier: 'gemini-1.5-pro-002',
