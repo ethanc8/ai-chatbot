@@ -16,13 +16,13 @@ export const models: Array<Model> = [
   },
   {
     id: 'gemini-exp-1114',
-    label: 'Gemini-Exp 1114',
+    label: 'Gemini Experimental 1114',
     apiIdentifier: 'gemini-exp-1114',
     description: 'Google experimental model',
   },
   {
     id: 'gemini-exp-1121',
-    label: 'Gemini-Exp 1121',
+    label: 'Gemini Experimental 1121',
     apiIdentifier: 'gemini-exp-1121',
     description: 'Google experimental model',
   },
