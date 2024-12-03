@@ -3,7 +3,7 @@
 'use client';
 
 import { generateUUID, Problem } from "@/lib/utils";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AssignmentHeader } from "./assignment-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,36 +11,55 @@ import { Textarea } from "@/components/ui/textarea";
 
 export function Assignment({
   id,
-  initialProblems,
 }: {
   id: string;
-  initialProblems: Array<Problem>;
 }) {
-  const [problems, setProblems] = useState<Problem[]>(initialProblems || []);
+  const [problems, setProblems] = useState<Problem[]>([]);
   const [title, setTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  const handleSave = async () => {
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      try {
+        const response = await fetch(`/api/assignment?id=${id}`);
+        if (response.ok) {
+          const assignmentData = await response.json();
+          setProblems(assignmentData.problems || []);
+          setTitle(assignmentData.title || '');
+        } else {
+          console.error('Failed to fetch assignment data');
+        }
+      } catch (error) {
+        console.error('Error fetching assignment:', error);
+      }
+    };
+
+    fetchAssignment();
+  }, [id]);
+
+  const handleSave = async (sendNotification: boolean) => {
     try {
       const response = await fetch(`/api/assignment?id=${id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, problems }),
+        body: JSON.stringify({ title, problems, sendNotification }),
       });
+      if (response.ok) {
+        setIsEditing(false);
+        setEditingIndex(null);
+      }
 
       if (response.ok) {
         setIsEditing(false);
         setEditingIndex(null);
-        // Optionally, handle success (e.g., show a message)
-      } else {
-        // Optionally, handle error (e.g., show an error message)
+      else {
+        console.error('Failed to save assignment data');
       }
     } catch (error) {
       console.error('Error saving assignment:', error);
-      // Optionally, handle error (e.g., show an error message)
     }
   };
 

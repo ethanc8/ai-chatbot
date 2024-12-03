@@ -23,7 +23,7 @@ export function AssignmentHeader({
   id: string;
   title: string;
   setTitle: (title: string) => void;
-  handleSave: () => void;
+  handleSave: (sendNotification: boolean) => void;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
   addNewProblem?: () => void;
@@ -70,7 +70,7 @@ export function AssignmentHeader({
                   onChange={(e) => setTitle(e.target.value)}
                   className="order-1 md:order-2"
                 />
-                <Button onClick={handleSave} className="order-1 md:order-2">
+                <Button onClick={() => handleSave(true)} className="order-1 md:order-2">
                   Save
                 </Button>
               </>
