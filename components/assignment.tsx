@@ -1,7 +1,10 @@
 'use client';
 
+'use client';
+
 import { Problem } from "@/lib/utils";
 import { useState } from 'react';
+import { AssignmentHeader } from "./assignment-header";
 
 export function Assignment({
   id,
@@ -12,10 +15,6 @@ export function Assignment({
 }) {
   const [title, setTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
 
   const handleSave = async () => {
     try {
@@ -41,21 +40,20 @@ export function Assignment({
 
   return (
     <>
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <button onClick={handleSave}>Save</button>
-        </>
-      ) : (
-        <>
-          <h2>{title}</h2>
-          <button onClick={handleEdit}>Edit Title</button>
-        </>
-      )}
+      <div className="flex flex-col min-w-0 h-dvh bg-background">
+        <AssignmentHeader
+          id={id}
+          title={title}
+          setTitle={setTitle}
+          handleSave={handleSave}
+          isEditing={setIsEditing}
+          setIsEditing={setIsEditing}
+        />
+        <div
+          className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
+        >
+        </div>
+      </div>
     </>
   );
 }
