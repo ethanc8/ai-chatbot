@@ -52,19 +52,37 @@ export function Assignment({
         setEditingIndex(null);
       }
 
-      if (response.ok) {
-        setIsEditing(false);
-        setEditingIndex(null);
-      } else {
+      if (!response.ok) {
         console.error('Failed to save assignment data');
+        return;
       }
+
+      await Promise.all(problems.map(problem =>
+        fetch(`/api/problem?id=${problem.id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ assignmentId: id, content: problem }),
+        })
+      ));
+
+      if(sendNotification){
+        // TODO: Implement send notification logic here.
+        console.log('Sending notification...');
+      }
+
+      setIsEditing(false);
+      setEditingIndex(null);
+
     } catch (error) {
-      console.error('Error saving assignment:', error);
+      console.error('Error saving assignment or problems:', error);
     }
   };
 
   const addNewProblem = () => {
-    setProblems([...problems, { id: generateUUID(), problemDescription: "", answer: "", solutionWriteup: "" }]);
+    const newProblem = { id: generateUUID(), problemDescription: "", answer: "", solutionWriteup: "" };
+    setProblems([...problems, newProblem]);
     setEditingIndex(problems.length);
   };
 
