@@ -11,8 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 export function Assignment({
   id,
+  initialProblems,
 }: {
   id: string;
+  initialProblems: Problem[];
 }) {
   const [problems, setProblems] = useState<Problem[]>([]);
   const [title, setTitle] = useState('');
