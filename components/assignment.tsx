@@ -55,7 +55,7 @@ export function Assignment({
       if (response.ok) {
         setIsEditing(false);
         setEditingIndex(null);
-      else {
+      } else {
         console.error('Failed to save assignment data');
       }
     } catch (error) {
