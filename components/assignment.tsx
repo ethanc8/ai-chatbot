@@ -130,7 +130,7 @@ export function Assignment({
                     className="mb-2"
                     placeholder="Solution Writeup"
                   />
-                  <Button onClick={() => setEditingIndex(null)}>Done</Button>
+                  <Button onClick={() => {setEditingIndex(null); handleSave(false); }}>Done</Button>
                 </>
               ) : (
                 <>
