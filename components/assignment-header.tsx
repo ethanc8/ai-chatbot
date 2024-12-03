@@ -18,6 +18,7 @@ export function AssignmentHeader({
   handleSave,
   isEditing,
   setIsEditing,
+  addNewProblem,
 }: {
   id: string;
   title: string;

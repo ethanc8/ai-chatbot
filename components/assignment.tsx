@@ -2,7 +2,7 @@
 
 'use client';
 
-import { Problem } from "@/lib/utils";
+import { generateUUID, Problem } from "@/lib/utils";
 import { useState } from 'react';
 import { AssignmentHeader } from "./assignment-header";
 import { Input } from "@/components/ui/input";
@@ -45,19 +45,13 @@ export function Assignment({
   };
 
   const addNewProblem = () => {
-    setProblems([...problems, { title: 'New Problem', content: '', steps: [] }]);
+    setProblems([...problems, { id: generateUUID(), problemDescription: "", answer: "", solutionWriteup: "" }]);
     setEditingIndex(problems.length);
   };
 
   const handleProblemChange = (index: number, field: string, value: any) => {
     const updatedProblems = [...problems];
     (updatedProblems[index] as any)[field] = value;
-    setProblems(updatedProblems);
-  };
-
-  const handleStepsChange = (index: number, value: string) => {
-    const updatedProblems = [...problems];
-    updatedProblems[index].steps = value.split('\n').filter(step => step.trim() !== '');
     setProblems(updatedProblems);
   };
 
@@ -78,36 +72,31 @@ export function Assignment({
             <div key={index} className="border p-4 rounded-md">
               {editingIndex === index ? (
                 <>
+                  <Textarea
+                    value={problem.problemDescription}
+                    onChange={(e) => handleProblemChange(index, 'problemDescription', e.target.value)}
+                    className="mb-2"
+                    placeholder="Problem Description"
+                  />
                   <Input
-                    value={problem.title}
-                    onChange={(e) => handleProblemChange(index, 'title', e.target.value)}
-                    className="font-bold text-lg mb-2"
+                    value={problem.answer}
+                    onChange={(e) => handleProblemChange(index, 'answer', e.target.value)}
+                    className="mb-2"
+                    placeholder="Answer"
                   />
                   <Textarea
-                    value={problem.content}
-                    onChange={(e) => handleProblemChange(index, 'content', e.target.value)}
+                    value={problem.solutionWriteup}
+                    onChange={(e) => handleProblemChange(index, 'solutionWriteup', e.target.value)}
                     className="mb-2"
-                    placeholder="Problem Content"
-                  />
-                  <Textarea
-                    value={problem.steps.join('\n')}
-                    onChange={(e) => handleStepsChange(index, e.target.value)}
-                    className="mb-2"
-                    placeholder="Steps (one per line)"
+                    placeholder="Solution Writeup"
                   />
                   <Button onClick={() => setEditingIndex(null)}>Done</Button>
                 </>
               ) : (
                 <>
-                  <h3 className="font-bold text-lg mb-2">{problem.title}</h3>
-                  <p className="mb-2">{problem.content}</p>
-                  {problem.steps.length > 0 && (
-                    <ul className="list-disc list-inside mb-2">
-                      {problem.steps.map((step, stepIndex) => (
-                        <li key={stepIndex}>{step}</li>
-                      ))}
-                    </ul>
-                  )}
+                  <p className="mb-2">{problem.problemDescription}</p>
+                  <p className="mb-2"><b>Answer:</b>{problem.answer}</p>
+                  <p className="mb-2"><b>Solution:</b>{problem.solutionWriteup}</p>
                   <Button onClick={() => setEditingIndex(index)}>Edit</Button>
                 </>
               )}
