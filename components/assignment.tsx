@@ -8,6 +8,7 @@ import { AssignmentHeader } from "./assignment-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Markdown } from "./markdown";
 
 export function Assignment({
   id,
@@ -134,9 +135,14 @@ export function Assignment({
                 </>
               ) : (
                 <>
-                  <p className="mb-2">{problem.problemDescription}</p>
-                  <p className="mb-2"><b>Answer:</b>{problem.answer}</p>
-                  <p className="mb-2"><b>Solution:</b>{problem.solutionWriteup}</p>
+                  <Markdown>
+{`${problem.problemDescription}
+
+**Answer:** ${problem.answer}
+
+**Solution:** ${problem.solutionWriteup}
+` as string}
+                  </Markdown>
                   <Button onClick={() => setEditingIndex(index)}>Edit</Button>
                 </>
               )}
