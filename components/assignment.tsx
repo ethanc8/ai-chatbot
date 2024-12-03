@@ -27,10 +27,11 @@ export function Assignment({
         const response = await fetch(`/api/assignment?id=${id}`);
         if (response.ok) {
           const assignmentData = await response.json();
-          setProblems(assignmentData.problems || []);
+          setProblems(assignmentData.problems?.length > 0 ? assignmentData.problems : initialProblems);
           setTitle(assignmentData.title || '');
         } else {
           console.error('Failed to fetch assignment data');
+          setProblems(initialProblems);
         }
       } catch (error) {
         console.error('Error fetching assignment:', error);
