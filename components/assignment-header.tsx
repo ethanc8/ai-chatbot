@@ -7,7 +7,7 @@ import { useWindowSize } from 'usehooks-ts';
 import { SidebarToggle } from '@/components/sidebar-toggle';
 import { Button } from '@/components/ui/button';
 import { BetterTooltip } from '@/components/ui/tooltip';
-import { PlusIcon } from '@/components/chat-header';
+import { PlusIcon } from './icons';
 import { Input } from '@/components/ui/input';
 import { useSidebar } from './ui/sidebar';
 
@@ -40,7 +40,7 @@ export function AssignmentHeader({
             variant="outline"
             className="order-2 md:order-1 md:px-2 px-2 md:h-fit ml-auto md:ml-0"
             onClick={() => {
-              router.push('/');
+              router.push('/assignment');
               router.refresh();
             }}
           >

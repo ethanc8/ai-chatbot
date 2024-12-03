@@ -46,7 +46,7 @@ export function Assignment({
           title={title}
           setTitle={setTitle}
           handleSave={handleSave}
-          isEditing={setIsEditing}
+          isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
         <div
