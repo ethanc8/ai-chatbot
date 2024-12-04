@@ -1,6 +1,6 @@
 'use client';
 
-'use client';
+import { useRouter } from 'next/navigation';
 
 import { generateUUID, Problem } from "@/lib/utils";
 import { useEffect, useState } from 'react';
@@ -21,6 +21,8 @@ export function Assignment({
   const [title, setTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAssignment = async () => {
@@ -144,6 +146,10 @@ export function Assignment({
 ` as string}
                   </Markdown>
                   <Button onClick={() => setEditingIndex(index)}>Edit</Button>
+                  <Button onClick={() => {
+                    router.push(`/assignment/${id}/problem/${problem.id}/chat`);
+                    router.refresh();
+                  }}>Chat</Button>
                 </>
               )}
             </div>

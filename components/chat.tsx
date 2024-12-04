@@ -3,7 +3,7 @@
 import type { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
@@ -22,10 +22,12 @@ export function Chat({
   id,
   initialMessages,
   selectedModelId,
+  mustReload,
 }: {
   id: string;
   initialMessages: Array<Message>;
   selectedModelId: string;
+  mustReload?: boolean;
 }) {
   const { mutate } = useSWRConfig();
 
@@ -39,6 +41,7 @@ export function Chat({
     isLoading,
     stop,
     data: streamingData,
+    reload,
   } = useChat({
     body: { id, modelId: selectedModelId },
     initialMessages,
@@ -73,6 +76,12 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+
+  useEffect(() => {
+    if(mustReload) {
+      reload();
+    }
+  }, []);
 
   return (
     <>
