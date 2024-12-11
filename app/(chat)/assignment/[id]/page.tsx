@@ -37,7 +37,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     models.find((model) => model.id === modelIdFromCookie)?.id ||
     DEFAULT_MODEL_NAME;
 
-  console.log(`Problems: ${JSON.stringify(convertToUIProblems(problemsFromDb))}`)
+  // console.log(`Problems: ${JSON.stringify(convertToUIProblems(problemsFromDb))}`)
 
   return (
     <PreviewAssignment
