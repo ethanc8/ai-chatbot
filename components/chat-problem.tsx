@@ -144,9 +144,9 @@ export function Chat({
 //     }
 //   }
 
-  // function stageFinish() {
-  //   console.log(`stageFinish() called with stage == ${stage}`);
-  // }
+  function stageFinish() {
+    console.log(`stageFinish() called with stage == ${stage}`);
+  }
 
   return (
     <>
