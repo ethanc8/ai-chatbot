@@ -20,7 +20,7 @@ import { Overview } from './overview';
 
 import { generateUUID, Problem } from '@/lib/utils';
 
-export function Chat({
+export function ChatProblem({
   id,
   initialMessages,
   selectedModelId,
@@ -32,7 +32,6 @@ export function Chat({
   problem: Problem;
 }) {
   const { mutate } = useSWRConfig();
-
   const {
     messages,
     setMessages,
@@ -75,6 +74,8 @@ export function Chat({
     fetcher,
   );
 
+  console.log(messages);
+
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
@@ -83,6 +84,7 @@ export function Chat({
   // Deal with the state
   const [stage, setStage] = useState('begin');
   useEffect(() => {
+    console.log(messages)
     if(stage === 'begin') {
       setStage('firstAttempt');
       reload();
@@ -90,62 +92,58 @@ export function Chat({
   }, []);
 
   // called during useChat onFinish
-//   function stageFinish() {
-//     console.log(`stageFinish() called with stage == ${stage}`);
-//     if(stage === 'firstAttempt') {
-//       setStage('finalThoughts');
-//       // Finished first attempt, show the correct answer and the solution.
-//       append({
-//         id: generateUUID(),
-//         role: "data",
-//         content: 
-// `The correct answer is \${${problem.answer}\$. The solution writeup is as follows:
-
-// ${problem.solutionWriteup}
-
-// ---
-
-// As a reminder, the problem is "${problem.problemDescription}" and the answer is \$${problem.answer}\$.
-// If there's anything you need to think through more, do so now.
-// `
-//       });
-//     } else if(stage === 'finalThoughts') {
-//       setStage('chat');
-//       append({
-//         id: generateUUID(),
-//         role: "data",
-//         content: 
-// `
-// The user is now here. Ask them if they would
-// like one of the three following methods of help:
-
-// The answer: if the student chooses this, provide a structured, step-by-step
-// explanation to solve the problem. Solve the problem symbolically and
-// exclusively use variables whenever possible until you have an expression that,
-// if you plug in the numbers assigned to the variables, will return the correct
-// answer. At that point, tell the user to plug in the values.
-
-// Guidance: if the student chooses this, guide the user to perform the same
-// steps as you would if you were solving it, and point out any mistakes they
-// make. At no point should you give them the answer.
-
-// Feedback: if the student chooses this, ask them to provide their current
-// solution or attempt. If their answer is correct, affirm it regardless of
-// whether work exists or not. Otherwise, find their error and let them know
-// where and how they made a mistake.
-
-// Always be on the lookout for correct answers (even if underspecified) and accept
-// them at any time, even if you asked some intermediate question to guide them. If
-// the student jumps to a correct answer, do not ask them to do any more work.
-
-// As a reminder, the problem is "${problem.problemDescription}" and the answer is \$${problem.answer}\$. 
-// `
-//       });
-//     }
-//   }
-
   function stageFinish() {
     console.log(`stageFinish() called with stage == ${stage}`);
+    if(stage === 'firstAttempt') {
+      setStage('finalThoughts');
+      // Finished first attempt, show the correct answer and the solution.
+      append({
+        id: generateUUID(),
+        role: "data",
+        content: 
+`The correct answer is \${${problem.answer}\$. The solution writeup is as follows:
+
+${problem.solutionWriteup}
+
+---
+
+As a reminder, the problem is "${problem.problemDescription}" and the answer is \$${problem.answer}\$.
+If there's anything you need to think through more, do so now.
+`
+      });
+    } else if(stage === 'finalThoughts') {
+      setStage('chat');
+      append({
+        id: generateUUID(),
+        role: "data",
+        content: 
+`
+The user is now here. Ask them if they would
+like one of the three following methods of help:
+
+The answer: if the student chooses this, provide a structured, step-by-step
+explanation to solve the problem. Solve the problem symbolically and
+exclusively use variables whenever possible until you have an expression that,
+if you plug in the numbers assigned to the variables, will return the correct
+answer. At that point, tell the user to plug in the values.
+
+Guidance: if the student chooses this, guide the user to perform the same
+steps as you would if you were solving it, and point out any mistakes they
+make. At no point should you give them the answer.
+
+Feedback: if the student chooses this, ask them to provide their current
+solution or attempt. If their answer is correct, affirm it regardless of
+whether work exists or not. Otherwise, find their error and let them know
+where and how they made a mistake.
+
+Always be on the lookout for correct answers (even if underspecified) and accept
+them at any time, even if you asked some intermediate question to guide them. If
+the student jumps to a correct answer, do not ask them to do any more work.
+
+As a reminder, the problem is "${problem.problemDescription}" and the answer is \$${problem.answer}\$. 
+`
+      });
+    }
   }
 
   return (

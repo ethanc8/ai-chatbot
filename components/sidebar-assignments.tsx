@@ -184,10 +184,8 @@ export function SidebarAssignments({ user }: { user: User | undefined }) {
             <PlusIcon />
             <span>New Assignment</span>
           </SidebarMenuButton>
-          <div className="text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
-            <div>
-              Your conversations will appear here once you start assignmentting!
-            </div>
+          <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+            Your conversations will appear here once you start creating assignments!
           </div>
         </SidebarGroupContent>
       </SidebarGroup>
