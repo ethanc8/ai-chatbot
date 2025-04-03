@@ -19,12 +19,10 @@ export default async function Page(props: { params: Promise<{ id: string, proble
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('model-id')?.value;
 
-  // const selectedModelId =
-  //   models.find((model) => model.id === modelIdFromCookie)?.id ||
-  //   DEFAULT_MODEL_NAME;
+  const selectedModelId =
+    models.find((model) => model.id === modelIdFromCookie)?.id ||
+    DEFAULT_MODEL_NAME;
 
-  // We want to use LearnLM here (TODO: Is this a good idea?)
-  const selectedModelId = DEFAULT_MODEL_NAME;
   const dbproblem = await getProblemById({ id: problemid });
   const problem: Problem = dbproblem.content as Problem;
   let messages: Message[] = [];
