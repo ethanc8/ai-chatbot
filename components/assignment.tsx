@@ -19,6 +19,7 @@ export function Assignment({
 }) {
   const [problems, setProblems] = useState<Problem[]>([]);
   const [title, setTitle] = useState('');
+  const [creator, setCreator] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -31,6 +32,7 @@ export function Assignment({
         if (response.ok) {
           const assignmentData = await response.json();
           setProblems(assignmentData.problems?.length > 0 ? assignmentData.problems : initialProblems);
+          setCreator(assignmentData.userId);
           setTitle(assignmentData.title || '');
         } else {
           console.error('Failed to fetch assignment data');
@@ -113,7 +115,7 @@ export function Assignment({
         <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 px-4">
           {problems.map((problem, index) => (
             <div key={index} className="border p-4 rounded-md">
-              {editingIndex === index ? (
+              {(editingIndex === index /* && creator == session.user.id */) ? (
                 <>
                   <Textarea
                     value={problem.problemDescription}

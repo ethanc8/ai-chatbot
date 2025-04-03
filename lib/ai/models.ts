@@ -32,6 +32,12 @@ export const models: Array<Model> = [
     apiIdentifier: 'learnlm-1.5-pro-experimental',
     description: 'Google experimental tutoring model',
   },
+  {
+    id: 'gemini-2.0-flash-lite-001',
+    label: "Gemini 2.0 Flash Lite",
+    apiIdentifier: 'gemini-2.0-flash-lite-001',
+    description: 'A gemini model we can actually use',
+  },
 ] as const;
 
-export const DEFAULT_MODEL_NAME: string = 'gemini-1.5-pro-002';
+export const DEFAULT_MODEL_NAME: string = 'gemini-2.0-flash-lite-001';

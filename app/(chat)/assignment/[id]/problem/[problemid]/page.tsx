@@ -26,10 +26,6 @@ export default async function Page(props: { params: Promise<{ id: string, proble
     return notFound();
   }
 
-  if (session.user.id !== assignment.userId) {
-    return notFound();
-  }
-
   const problemsFromDb = await getProblemsByAssignmentId({
     id,
   });

@@ -25,10 +25,6 @@ export async function GET(request: Request) {
     return new Response('Not Found', { status: 404 });
   }
 
-  if (assignment.userId !== session.user.id) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
   return Response.json(assignment, { status: 200 });
 }
 
@@ -77,10 +73,6 @@ export async function DELETE(request: Request) {
 
   try {
     const assignment = await getAssignmentById({ id });
-
-    if (assignment.userId !== session.user.id) {
-      return new Response('Unauthorized', { status: 401 });
-    }
 
     await deleteAssignmentById({ id });
 

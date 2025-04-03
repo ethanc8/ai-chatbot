@@ -323,6 +323,18 @@ export async function deleteAssignmentById({ id }: { id: string }) {
   }
 }
 
+export async function getAllAssignments() {
+  try {
+    return await db
+      .select()
+      .from(assignment)
+      .orderBy(desc(assignment.createdAt));
+  } catch (error) {
+    console.error('Failed to get assignments by user from database');
+    throw error;
+  }
+}
+
 export async function getAssignmentsByUserId({ id }: { id: string }) {
   try {
     return await db

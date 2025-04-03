@@ -1,5 +1,5 @@
 import { auth } from '@/app/(auth)/auth';
-import { getAssignmentsByUserId } from '@/lib/db/queries';
+import { getAllAssignments } from '@/lib/db/queries';
 
 export async function GET() {
   const session = await auth();
@@ -9,6 +9,6 @@ export async function GET() {
   }
 
   // biome-ignore lint: Forbidden non-null assertion.
-  const chats = await getAssignmentsByUserId({ id: session.user.id! });
+  const chats = await getAllAssignments();
   return Response.json(chats);
 }

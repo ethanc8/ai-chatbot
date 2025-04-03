@@ -24,7 +24,7 @@ export default async function Page(props: { params: Promise<{ id: string, proble
   //   DEFAULT_MODEL_NAME;
 
   // We want to use LearnLM here (TODO: Is this a good idea?)
-  const selectedModelId = "learnlm-1.5-pro-experimental";
+  const selectedModelId = DEFAULT_MODEL_NAME;
   const dbproblem = await getProblemById({ id: problemid });
   const problem: Problem = dbproblem.content as Problem;
   let messages: Message[] = [];
